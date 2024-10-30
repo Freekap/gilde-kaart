@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 500px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        // api call
+        const apiUrl = "https://nominatim.openstreetmap.org/search?format=json&q=Roermond";
+
+        // fetch
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                // extract lat & long
+                const latitude = data[0].lat;
+                const longitude = data[0].lon;
+
+                // make map
+                const map = L.map('map').setView([latitude, longitude], 13);
+
+                // add map tiles
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(map);
+
+                // add marker
+                L.marker([latitude, longitude]).addTo(map)
+                    .bindPopup("<b>Locatie:</b> Roermond")
+                    .openPopup();
+            })
+            .catch(error => console.error("error getting location:", error));
+    </script>
+</body>
+</html>
